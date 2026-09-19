@@ -1,4 +1,3 @@
-using System;
 using Mirror;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -16,6 +15,7 @@ public class PlayerInput : NetworkBehaviour
     private Vector2 _lookVector;
     private InputAction _interactionAction;
     private InputAction _pickAction;
+    private InputAction _shootAction;
 
     public InteractionInputData interactionInputData;
     public PickableInputData pickableInputData;
@@ -25,6 +25,7 @@ public class PlayerInput : NetworkBehaviour
     public InputAction PickAction => _pickAction;
     public bool IsSprinting => _isSprinting;
     public Vector2 LookVector => _lookVector;
+    public InputAction ShootAction => _shootAction;
 
     private void Awake()
     {
@@ -34,6 +35,7 @@ public class PlayerInput : NetworkBehaviour
         _lookAction = InputSystem.actions.FindAction("Look");
         _interactionAction = InputSystem.actions.FindAction("Interact");
         _pickAction = InputSystem.actions.FindAction("PickUp");
+        _shootAction = InputSystem.actions.FindAction("Attack");
         interactionInputData.ResetData();
     }
 

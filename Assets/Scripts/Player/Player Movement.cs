@@ -9,10 +9,12 @@ public class PlayerMovement : NetworkBehaviour
     private PlayerInput _input;
     private Rigidbody _rb;
     private PlayerLook _playerLook;
+    private GrappleGun _grapple;
 
     [Header("Movement Variables")]
     [SerializeField] private float _moveSpeed = 10f;
     [SerializeField] private float _sprintSpeed = 15f;
+    [SerializeField] private float _airControlStrength = 0.2f;
     private float _currentSpeed;
     
     [Header("Jump Variables")]
@@ -30,6 +32,7 @@ public class PlayerMovement : NetworkBehaviour
         _input = GetComponent<PlayerInput>();
         _rb = GetComponent<Rigidbody>();
         _playerLook = GetComponent<PlayerLook>();
+        _grapple = GetComponentInChildren<GrappleGun>();
         _currentSpeed = _moveSpeed;
     }
 
@@ -65,8 +68,7 @@ public class PlayerMovement : NetworkBehaviour
             }
         }
         if (_menuActive)
-            return;
-
+            return; 
         Movement(_input.MoveVector);
     }
 
@@ -77,11 +79,6 @@ public class PlayerMovement : NetworkBehaviour
 
     private void Movement(Vector2 moveVector)
     {
-        float velocityX = moveVector.x * _currentSpeed;
-        float velocityz = moveVector.y * _currentSpeed;
-
-        _rb.linearVelocity = new Vector3(velocityX, _rb.linearVelocity.y, velocityz);
-
         Vector3 camForward = _playerLook.CameraForward.forward;
         Vector3 camRight = _playerLook.CameraForward.right;
         camForward.y = 0f;
@@ -89,10 +86,12 @@ public class PlayerMovement : NetworkBehaviour
 
         Vector3 moveDirection = (camForward * moveVector.y + camRight * moveVector.x);
         Vector3 horizontalVelocity = moveDirection * _currentSpeed;
-
-        _rb.linearVelocity = new Vector3(horizontalVelocity.x, _rb.linearVelocity.y, horizontalVelocity.z);
+        if(!_grapple.IsGrappling)
+            _rb.linearVelocity = new Vector3(horizontalVelocity.x, _rb.linearVelocity.y, horizontalVelocity.z);
+        else
+            _rb.AddForce(moveDirection * _airControlStrength, ForceMode.Acceleration);
     }
-
+    
     private void Jump(float jumpForce)
     {
         _rb.AddForce(Vector3.up*jumpForce, ForceMode.Impulse);

@@ -14,16 +14,14 @@ public class PickableData : ScriptableObject
     {
         if (_pickable != null)
             return false;
-        else
-            return true;
+        return true;
     }
 
     public bool IsSamePickable(Pickable _pickable)
     {
         if(this._pickable == _pickable)
             return true;
-        else
-            return false;
+        return false;
     }
 
     public void Pick()

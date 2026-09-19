@@ -10,4 +10,5 @@ public interface IInteractable
    string SecondaryTooltip { get; }
 
    void OnInteract();
+   
 }
