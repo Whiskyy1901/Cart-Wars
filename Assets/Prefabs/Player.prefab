@@ -8627,8 +8627,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 921bdf7f2d7861345afaf160d1ffdbe5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GrappleGun
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _grappleRange: 30
-  _grappleRayRadius: 0.5
+  _grappleRayRadius: 0.1
   _grappleCooldown: 0
   _shootPos: {fileID: 2852788497931300298}
   _hookObject: {fileID: 2833208749704897748, guid: f4ff24b3bcca63d45800e5293349bcc8, type: 3}
@@ -8640,6 +8643,11 @@ MonoBehaviour:
   _massScale: 1
   _reelSpeed: 2.5
   _minReelDistance: 2
+  _pullableLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  _pullSpring: 200
+  _pullDamper: 10
 --- !u!120 &211273901702630944
 LineRenderer:
   serializedVersion: 3

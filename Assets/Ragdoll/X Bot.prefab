@@ -14,15 +14,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a388f50a2eecbae47a7fac3cf7313e0c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.7720587
+      value: -1.04
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a388f50a2eecbae47a7fac3cf7313e0c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.069
+      value: 0.50000024
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a388f50a2eecbae47a7fac3cf7313e0c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -6.412
+      value: -3.481482
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a388f50a2eecbae47a7fac3cf7313e0c, type: 3}
       propertyPath: m_LocalRotation.w
@@ -347,6 +347,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a388f50a2eecbae47a7fac3cf7313e0c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6873297836736668784}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a388f50a2eecbae47a7fac3cf7313e0c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6478978309923216064}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a388f50a2eecbae47a7fac3cf7313e0c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2142347120439760183}
     - targetCorrespondingSourceObject: {fileID: 1082271958561512970, guid: a388f50a2eecbae47a7fac3cf7313e0c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1550129570931502690}
@@ -1082,7 +1088,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5192497353176401563}
   serializedVersion: 5
-  m_Mass: 10.9375
+  m_Mass: 10
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -1122,6 +1128,38 @@ MonoBehaviour:
   _recoveryDelay: 0.5
   _blendDuration: 0.4
   _settledVelocityThreshold: 0.1
+--- !u!114 &6478978309923216064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5461491519126873536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 0
+  _assetId: 3406091221
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
+--- !u!114 &2142347120439760183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5461491519126873536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 515d9a6fd223f3140bf1feb8378ea22b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Pullable
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!1 &5959137134727164970 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -7657966619581158213, guid: a388f50a2eecbae47a7fac3cf7313e0c, type: 3}

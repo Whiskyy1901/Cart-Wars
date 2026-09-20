@@ -12,11 +12,12 @@ public class PlayerLook : NetworkBehaviour
     [SerializeField] private int _maxPitch = 80;
     [SerializeField] private int _minPitch = -80;
     private Transform _cameraForward;
-    [SerializeField]private Camera _camera;
+    [SerializeField] private Camera _camera;
     [SerializeField] private AudioListener _listener;
     private float _pitch;
     
     public Transform CameraForward => _cameraForward;
+    public Camera Camera => _camera;
 
     public override void OnStartLocalPlayer()
     {

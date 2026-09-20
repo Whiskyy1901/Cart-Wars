@@ -86,7 +86,7 @@ public class PlayerMovement : NetworkBehaviour
 
         Vector3 moveDirection = (camForward * moveVector.y + camRight * moveVector.x);
         Vector3 horizontalVelocity = moveDirection * _currentSpeed;
-        if(!_grapple.IsGrappling)
+        if(!_grapple.MoveDisableGrapple)
             _rb.linearVelocity = new Vector3(horizontalVelocity.x, _rb.linearVelocity.y, horizontalVelocity.z);
         else
             _rb.AddForce(moveDirection * _airControlStrength, ForceMode.Acceleration);

@@ -74,8 +74,8 @@ public class FPSRagdollDragger : MonoBehaviour
 
             //find activeRagdoll controller on target
             currentActiveRagdoll = hit.collider.GetComponentInParent<ActiveRagdoll>();
-            if(currentActiveRagdoll != null)
-                currentActiveRagdoll.EnableRagdoll();
+            /*if(currentActiveRagdoll != null)
+               currentActiveRagdoll.EnableRagdoll();*/
             Rigidbody hitbody = hit.rigidbody;
 
             if(hitbody != null && !hitbody.isKinematic)
@@ -114,7 +114,7 @@ public class FPSRagdollDragger : MonoBehaviour
 
         if (currentActiveRagdoll != null)
         {
-            currentActiveRagdoll.DisableRagdollWithDelay();
+            //currentActiveRagdoll.DisableRagdollWithDelay();
             currentActiveRagdoll = null;
         }
         currentJoint = null;
