@@ -31,12 +31,14 @@ Note: Cross-device connections aren't supported yet. To test multiplayer feature
 
 ## Controls
 
-Move -> WASD.
-Look -> Mouse.
-Interact -> Hold E.
-Pick up -> F.
-Grapple -> Hold Left Click.
-Shoot -> Right Click.
+| Action    | Input       |
+|-----------|-------------|
+| Move      | WASD        |
+| Look      | Mouse       |
+| Interact  | Hold E      |
+| Pick up   | F           |
+| Grapple   | Hold Left Click |
+| Shoot     | Right Click |
 
 ## Known Limitations
 
