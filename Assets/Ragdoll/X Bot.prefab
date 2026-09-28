@@ -353,12 +353,21 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a388f50a2eecbae47a7fac3cf7313e0c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2142347120439760183}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a388f50a2eecbae47a7fac3cf7313e0c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 77169542543273632}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a388f50a2eecbae47a7fac3cf7313e0c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3979908581794862316}
     - targetCorrespondingSourceObject: {fileID: 1082271958561512970, guid: a388f50a2eecbae47a7fac3cf7313e0c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1550129570931502690}
     - targetCorrespondingSourceObject: {fileID: 1082271958561512970, guid: a388f50a2eecbae47a7fac3cf7313e0c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7625242825341098846}
+    - targetCorrespondingSourceObject: {fileID: 1082271958561512970, guid: a388f50a2eecbae47a7fac3cf7313e0c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6386505396617001224}
     - targetCorrespondingSourceObject: {fileID: 3135921509060577837, guid: a388f50a2eecbae47a7fac3cf7313e0c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 205583985786818634}
@@ -551,6 +560,11 @@ CharacterJoint:
   m_EnablePreprocessing: 0
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!4 &923413817891987438 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5465940246521907071, guid: a388f50a2eecbae47a7fac3cf7313e0c, type: 3}
+  m_PrefabInstance: {fileID: 5119031780410693777}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1306240191221967898 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -3086436065929644917, guid: a388f50a2eecbae47a7fac3cf7313e0c, type: 3}
@@ -953,6 +967,11 @@ CharacterJoint:
   m_EnablePreprocessing: 0
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!4 &4647940443767439226 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a388f50a2eecbae47a7fac3cf7313e0c, type: 3}
+  m_PrefabInstance: {fileID: 5119031780410693777}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &4977979744227810007 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -9070493210130169274, guid: a388f50a2eecbae47a7fac3cf7313e0c, type: 3}
@@ -1107,6 +1126,40 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &6386505396617001224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5192497353176401563}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a553cb17010b2403e8523b558bffbc14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror.Components::Mirror.NetworkTransformUnreliable
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 923413817891987438}
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 1
+  timelineOffset: 1
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  bufferResetMultiplier: 3
+  useFixedUpdate: 0
+  positionSensitivity: 0.01
+  rotationSensitivity: 0.01
+  scaleSensitivity: 0.01
 --- !u!1 &5461491519126873536 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: a388f50a2eecbae47a7fac3cf7313e0c, type: 3}
@@ -1124,10 +1177,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bcee4504deada047b0d0ac437c071b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  _hipsTransform: {fileID: 0}
-  _recoveryDelay: 0.5
-  _blendDuration: 0.4
+  _hipsTransform: {fileID: 923413817891987438}
+  _recoveryDelay: 3
+  _blendDuration: 0.6
   _settledVelocityThreshold: 0.1
+  _groundMask:
+    serializedVersion: 2
+    m_Bits: 64
+  _groundCheckDistance: 10
+  _getUpBackState: GetUp_Back
+  _getUpFrontState: GetUp_Front
 --- !u!114 &6478978309923216064
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1160,6 +1219,56 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _hipsSync: {fileID: 6386505396617001224}
+  _rootSync: {fileID: 77169542543273632}
+--- !u!114 &77169542543273632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5461491519126873536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a553cb17010b2403e8523b558bffbc14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror.Components::Mirror.NetworkTransformUnreliable
+  syncDirection: 1
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 4647940443767439226}
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  timelineOffset: 1
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  bufferResetMultiplier: 3
+  useFixedUpdate: 0
+  positionSensitivity: 0.01
+  rotationSensitivity: 0.01
+  scaleSensitivity: 0.01
+--- !u!114 &3979908581794862316
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5461491519126873536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a907f390692aa744ebe2b39d74c7429e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealthBase
+  _maxHealth: 10
+  _resistance: 0
 --- !u!1 &5959137134727164970 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -7657966619581158213, guid: a388f50a2eecbae47a7fac3cf7313e0c, type: 3}

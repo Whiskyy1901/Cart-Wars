@@ -1,72 +1,88 @@
 using System;
 using Mirror;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerLook : NetworkBehaviour
 {
     private PlayerInput _input;
-    
     [Header("Camera Variables")]
     [SerializeField] float _sensitivity;
-    [SerializeField] private int _maxPitch = 80;
-    [SerializeField] private int _minPitch = -80;
+    [SerializeField] private float _maxPitch = 80f;
+    [SerializeField] private float _minPitch = -80f;
     private Transform _cameraForward;
     [SerializeField] private Camera _camera;
     [SerializeField] private AudioListener _listener;
     private float _pitch;
-    
+
+    [Header("FOV Punch (Grapple Pull)")]
+    [SerializeField] private GrappleGun _grapple;
+    [SerializeField] private float _pullFov = 75f;
+    [SerializeField] private float _fovLerpSpeed = 8f;
+    private float _baseFov;
+
     public Transform CameraForward => _cameraForward;
     public Camera Camera => _camera;
 
+
     public override void OnStartLocalPlayer()
     {
-        // To make players have their own camera and not a shared one.
         base.OnStartLocalPlayer();
         _camera.enabled = true;
         _camera.tag = "MainCamera";
-        if (_listener != null)
-            _listener.enabled = true;
+        if(_listener != null)
+            _listener.enabled  = true;
     }
-    
+
     private void Awake()
     {
-        _input = GetComponent<PlayerInput>();
+        _input  = GetComponent<PlayerInput>();
         _cameraForward = _camera.gameObject.transform;
-        
+        _grapple = GetComponentInChildren<GrappleGun>();
+        _baseFov = _camera.fieldOfView;
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
     private void Start()
     {
-        if (!isLocalPlayer)
+        if(!isLocalPlayer)
         {
             _camera.enabled = false;
-            if (_listener != null)
+            if(_listener != null)
                 _listener.enabled = false;
         }
     }
 
     private void Update()
     {
-        if(!isLocalPlayer)
-            return;
+        if(!isLocalPlayer) return;
 
-        if (Mouse.current.middleButton.wasPressedThisFrame)
+        if(Mouse.current.middleButton.wasPressedThisFrame)
         {
-            if (Cursor.lockState == CursorLockMode.Locked)
+            if(Cursor.lockState == CursorLockMode.Locked)
             {
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
             }
+
             else
             {
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
             }
+              
+
         }
-        
+        UpdateFov();
+       
+            
+    } 
+
+    private void LateUpdate()
+    {
         Look();
     }
 
@@ -79,7 +95,19 @@ public class PlayerLook : NetworkBehaviour
         _pitch -= mouseY;
         _pitch = Mathf.Clamp(_pitch, _minPitch, _maxPitch);
         _camera.gameObject.transform.localRotation = Quaternion.Euler(_pitch, 0f, 0f);
-        
+
         this.gameObject.transform.Rotate(Vector3.up * mouseX);
+
     }
+    private void UpdateFov()
+    {
+        if(_camera == null || _grapple == null )
+            return;
+        
+       
+        
+        float targetFov = _grapple.IsPulling || _grapple.IsGrappling ? _pullFov : _baseFov;
+        _camera .fieldOfView = Mathf.Lerp(_camera.fieldOfView, targetFov, _fovLerpSpeed);
+    }
+
 }

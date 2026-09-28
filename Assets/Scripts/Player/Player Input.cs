@@ -15,7 +15,8 @@ public class PlayerInput : NetworkBehaviour
     private Vector2 _lookVector;
     private InputAction _interactionAction;
     private InputAction _pickAction;
-    private InputAction _shootAction;
+    private InputAction _leftShootAction;
+    private InputAction _rightShootAction;
 
     public InteractionInputData interactionInputData;
     public PickableInputData pickableInputData;
@@ -25,23 +26,30 @@ public class PlayerInput : NetworkBehaviour
     public InputAction PickAction => _pickAction;
     public bool IsSprinting => _isSprinting;
     public Vector2 LookVector => _lookVector;
-    public InputAction ShootAction => _shootAction;
+    public InputAction LeftShootAction => _leftShootAction;
+    public InputAction RightShootAction => _rightShootAction;
+
+    public bool _takingInput = true;
 
     private void Awake()
     {
+        _takingInput = true;
         _moveAction = InputSystem.actions.FindAction("Move");
         _jumpAction = InputSystem.actions.FindAction("Jump");
         _sprintAction = InputSystem.actions.FindAction("Sprint");
         _lookAction = InputSystem.actions.FindAction("Look");
         _interactionAction = InputSystem.actions.FindAction("Interact");
         _pickAction = InputSystem.actions.FindAction("PickUp");
-        _shootAction = InputSystem.actions.FindAction("Attack");
+        _leftShootAction = InputSystem.actions.FindAction("LeftAttack");
+        _rightShootAction = InputSystem.actions.FindAction("RightAttack");
         interactionInputData.ResetData();
     }
 
     private void Update()
     {
         if(!isLocalPlayer)
+            return;
+        if(!_takingInput)
             return;
         _moveVector = _moveAction.ReadValue<Vector2>();
         _moveVector.Normalize();

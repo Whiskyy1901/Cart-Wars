@@ -89,7 +89,7 @@ public class PlayerMovement : NetworkBehaviour
         if(!_grapple.MoveDisableGrapple)
             _rb.linearVelocity = new Vector3(horizontalVelocity.x, _rb.linearVelocity.y, horizontalVelocity.z);
         else
-            _rb.AddForce(moveDirection * _airControlStrength, ForceMode.Acceleration);
+            _rb.AddForce(moveDirection * _airControlStrength * _currentSpeed, ForceMode.Acceleration);
     }
     
     private void Jump(float jumpForce)

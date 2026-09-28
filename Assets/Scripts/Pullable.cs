@@ -1,19 +1,20 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 
 public class Pullable : NetworkBehaviour
 {
     public enum RagdollState : byte { Animated, Ragdoll, Recovering }
-
     [SerializeField] private NetworkTransformBase _hipsSync;
     [SerializeField] private NetworkTransformBase _rootSync;
 
-    [SyncVar] private NetworkIdentity _puller;
+    [SyncVar] private NetworkIdentity[] _puller;
+    [SyncVar] private List<NetworkIdentity> _pullerList = new List<NetworkIdentity>();
     [SyncVar(hook = nameof(OnStateChanged))] private RagdollState _state;
 
-    private SpringJoint _springJoint;
+    private List<SpringJoint> _springJointList = new List<SpringJoint>();
     private ActiveRagdoll _ragdoll;
     private Coroutine _serverRecovery;
     private RagdollState _applied = RagdollState.Animated;
@@ -28,42 +29,51 @@ public class Pullable : NetworkBehaviour
         if (_hipsSync != null) _hipsSync.enabled = false;
         ApplyState(_state);   // late joiners
     }
-
+    
     [Server]
     public bool StartPull(float spring, float damper, NetworkIdentity puller)
     {
-        if (_puller != null) return false;
-        _puller = puller;
+        if (_pullerList.Contains(puller)) return false;
+
+        _pullerList.Add(puller);
 
         if (_serverRecovery != null) { StopCoroutine(_serverRecovery); _serverRecovery = null; }
 
         Rigidbody hips = _ragdoll.Hips;
-        _springJoint = hips.gameObject.AddComponent<SpringJoint>();
-        _springJoint.autoConfigureConnectedAnchor = false;
-        _springJoint.connectedBody = null;
-        _springJoint.connectedAnchor = puller.transform.position;
-        _springJoint.minDistance = 0f;
-        _springJoint.maxDistance = Vector3.Distance(hips.position, puller.transform.position);
-        _springJoint.spring = spring;
-        _springJoint.damper = damper;
+        SpringJoint springJoint = hips.gameObject.AddComponent<SpringJoint>();
+        springJoint.autoConfigureConnectedAnchor = false;
+        springJoint.connectedBody = null;
+        springJoint.connectedAnchor = puller.transform.position;
+        springJoint.minDistance = 0f;
+        springJoint.maxDistance = Vector3.Distance(hips.position, puller.transform.position);
+        springJoint.spring = spring;
+        springJoint.damper = damper;
+
+        _springJointList.Add(springJoint); // stays index-aligned with _pullerList
 
         SetState(RagdollState.Ragdoll);
-        return true;
+        return true;      
     }
 
     [Server]
     public void StopPull(NetworkIdentity requester)
     {
-        if (_puller != requester) return;   // resolves races between two pullers
-        ReleaseInternal();
+        int index = _pullerList.IndexOf(requester);
+        if (index < 0) return; // requester wasn't actually pulling
+
+        ReleaseInternal(index);
     }
 
     [Server]
-    private void ReleaseInternal()
+    private void ReleaseInternal(int index)
     {
-        if (_springJoint != null) Destroy(_springJoint);
-        _puller = null;
-        _serverRecovery = StartCoroutine(ServerRecovery());
+        if (_springJointList[index] != null) Destroy(_springJointList[index]);
+
+        _springJointList.RemoveAt(index);
+        _pullerList.RemoveAt(index);
+
+        if (_pullerList.Count == 0 && _serverRecovery == null)
+            _serverRecovery = StartCoroutine(ServerRecovery());
     }
 
     [Server]
@@ -105,8 +115,12 @@ public class Pullable : NetworkBehaviour
     [ServerCallback]
     private void FixedUpdate()
     {
-        if (_springJoint == null) return;
-        if (_puller == null) { ReleaseInternal(); return; }   // puller disconnected or was destroyed
-        _springJoint.connectedAnchor = _puller.transform.position;
+        if (_pullerList == null) return;
+
+        for (int i = _pullerList.Count - 1; i >= 0; i--)
+        {
+            if (_pullerList[i] == null) { ReleaseInternal(i); continue; } // that puller disconnected/was destroyed
+            _springJointList[i].connectedAnchor = _pullerList[i].transform.position;
+        }
     }
 }

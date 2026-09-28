@@ -25,6 +25,7 @@ public class GrappleGun : NetworkBehaviour
     [SerializeField] private float _reelSpeed = 5f;
     [SerializeField] private float _minReelDistance = 1f;
     private bool _isGrappling;
+    public bool IsPulling => isLocalPlayer && _isPulling;
 
     [Header("Pull Settings")]
     [SerializeField] private LayerMask _pullableLayer;
@@ -80,15 +81,11 @@ public class GrappleGun : NetworkBehaviour
         UpdateRope();
     }
 
-    // -------------------------------------------------------------------------
-    // Local input
-    // -------------------------------------------------------------------------
-
     private void HandleLocalInput()
     {
         _timeFromLastShot += Time.deltaTime;
 
-        if (_input.ShootAction.WasPressedThisFrame() && _timeFromLastShot >= _grappleCooldown && _springJoint == null)
+        if (_input.LeftShootAction.WasPressedThisFrame() && _timeFromLastShot >= _grappleCooldown && _springJoint == null)
         {
             Ray ray = new Ray(_playerLook.Camera.transform.position, _playerLook.CameraForward.forward);
             _timeFromLastShot = 0;
@@ -104,7 +101,7 @@ public class GrappleGun : NetworkBehaviour
                 StartGrapple(hit.point, hit.normal);
         }
 
-        if (_input.ShootAction.WasReleasedThisFrame())
+        if (_input.LeftShootAction.WasReleasedThisFrame())
         {
             if (_isGrappling) StopGrapple();
             else if (_isPulling) StopPull();
@@ -118,9 +115,7 @@ public class GrappleGun : NetworkBehaviour
             _springJoint.maxDistance -= _reelSpeed * Time.deltaTime;
     }
 
-    // -------------------------------------------------------------------------
     // Static grapple (swing)
-    // -------------------------------------------------------------------------
 
     private void StartGrapple(Vector3 point, Vector3 normal)
     {
