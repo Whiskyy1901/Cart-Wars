@@ -119,7 +119,11 @@ public class Pullable : NetworkBehaviour
 
         for (int i = _pullerList.Count - 1; i >= 0; i--)
         {
-            if (_pullerList[i] == null) { ReleaseInternal(i); continue; } // that puller disconnected/was destroyed
+            if (_pullerList[i] == null) 
+            { 
+                ReleaseInternal(i); 
+                continue;
+            } // that puller disconnected/was destroyed
             _springJointList[i].connectedAnchor = _pullerList[i].transform.position;
         }
     }

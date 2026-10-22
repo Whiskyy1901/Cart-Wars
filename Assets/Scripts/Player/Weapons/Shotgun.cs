@@ -111,7 +111,8 @@ public class Shotgun : NetworkBehaviour
     void CmdHit(HitData[] hitDataList)
     {
         // Network transform has server authority so that positions of shot objects can be synced across all clients.
-        // Passing struct because server does not have access to hit.transform and thus cannot access components, therefore we give Network Identity.
+        // Passing struct because server does not have access to hit.transform and thus cannot access components,
+        // therefore we give Network Identity.
         foreach (var hitData in hitDataList)
         {
             float distanceFactor = hitData.Distance / _range;
@@ -176,5 +177,4 @@ public class Shotgun : NetworkBehaviour
 
         Destroy(tracer.gameObject);
     }
-
 }

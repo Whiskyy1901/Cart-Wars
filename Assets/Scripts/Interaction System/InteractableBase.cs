@@ -1,4 +1,3 @@
-using Mirror;
 using UnityEngine;
 
 public class InteractableBase : MonoBehaviour, IInteractable

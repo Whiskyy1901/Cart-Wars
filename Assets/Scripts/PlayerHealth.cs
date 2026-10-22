@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class PlayerHealth : HealthBase
@@ -22,7 +21,7 @@ public class PlayerHealth : HealthBase
         Quaternion initialRotation = transform.rotation;
         _rb.freezeRotation = false;
         //move cam to third person view         
-        Awaitable.WaitForSecondsAsync(_stunDuration); // wait for stunDuration
+        Awaitable.WaitForSecondsAsync(_stunDuration);
         //reset everything
         Quaternion finalRotation = transform.rotation;
         _rb.rotation = Quaternion.Lerp(initialRotation, finalRotation, 1);

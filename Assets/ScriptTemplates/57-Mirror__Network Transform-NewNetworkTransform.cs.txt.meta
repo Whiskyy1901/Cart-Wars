@@ -1,14 +1,7 @@
 fileFormatVersion: 2
-guid: 38d41e2048919f64ea817eb343ffb09d
+guid: ad4879770a48b3442b759d8adcff80a7
 TextScriptImporter:
   externalObjects: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 129321
-  packageName: Mirror
-  packageVersion: 96.0.1
-  assetPath: Assets/ScriptTemplates/57-Mirror__Network Transform-NewNetworkTransform.cs.txt
-  uploadId: 736421

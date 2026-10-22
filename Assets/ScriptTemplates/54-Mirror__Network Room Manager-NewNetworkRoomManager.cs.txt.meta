@@ -1,14 +1,7 @@
 fileFormatVersion: 2
-guid: 2e5656107e61a93439544b91e5f541f6
+guid: a9b1cefe3355c8249830e78e36c02d1b
 TextScriptImporter:
   externalObjects: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 129321
-  packageName: Mirror
-  packageVersion: 96.0.1
-  assetPath: Assets/ScriptTemplates/54-Mirror__Network Room Manager-NewNetworkRoomManager.cs.txt
-  uploadId: 736421

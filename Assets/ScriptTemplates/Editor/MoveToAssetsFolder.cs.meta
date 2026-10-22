@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: e383132f744a8c1448807b71fa31f7ef
+guid: 110f1f89c76a1ae4ca4a7bd69d921014
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -9,10 +9,3 @@ MonoImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 129321
-  packageName: Mirror
-  packageVersion: 96.0.1
-  assetPath: Assets/ScriptTemplates/Editor/MoveToAssetsFolder.cs
-  uploadId: 736421
