@@ -1,19 +1,17 @@
-using Mirror;
 using UnityEngine;
 using UnityEngine.InputSystem; 
 
-public class DialogueInteraction : NetworkedInteractableBase
+public class DialogueInteraction : InteractableBase
 {
     [SerializeField] private string[] _messageStrings;
     private bool _isActive;
-    private DialogueUIPanel _dialoguePanel;
-    private int _currentLine = 0; //To keep tract of current position in _messageStrings;
+    [SerializeField] private DialogueUIPanel _dialoguePanel;
+    private int _currentLine = 0;
 
 
-    protected override void OnInteractLocal()
+    protected override void OnInteractLogic()
     {
-        base.OnInteractLocal();
-        _dialoguePanel = NetworkClient.localPlayer.GetComponentInChildren<DialogueUIPanel>(true);
+        base.OnInteractLogic();
         _dialoguePanel.gameObject.SetActive(true);
         _isActive = true;
         _currentLine = 0;
@@ -38,7 +36,7 @@ public class DialogueInteraction : NetworkedInteractableBase
             {
                 _dialoguePanel.gameObject.SetActive(false);
                 _isActive = false;
-                _currentLine = 0; // reset for next time dialogue opens
+                _currentLine = 0; //reset
             }
         }
     }

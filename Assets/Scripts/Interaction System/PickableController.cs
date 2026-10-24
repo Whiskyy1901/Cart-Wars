@@ -1,7 +1,7 @@
-using Mirror;
+using System;
 using UnityEngine;
 
-public class PickableController : NetworkBehaviour
+public class PickableController : MonoBehaviour
 {
     [Space, Header("Data")]
     [SerializeField] private PickableInputData _pickableInputData = null;
@@ -21,15 +21,13 @@ public class PickableController : NetworkBehaviour
 
     private Camera _cam;
 
-   public override void OnStartLocalPlayer()
+    private void Awake()
     {
-       _cam = GetComponentInChildren<Camera>();
+        _cam = GetComponentInChildren<Camera>();
     }
 
     void Update()
     {
-        if (!isLocalPlayer)
-            return;
         if (_pickableData.IsEmpty())
         {
             CheckForPickable();

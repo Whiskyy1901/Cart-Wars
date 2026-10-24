@@ -1,15 +1,12 @@
-using System;
-using Mirror;
 using UnityEngine;
 
 
 [RequireComponent(typeof(PlayerInput))]
-public class PlayerMovement : NetworkBehaviour
+public class PlayerMovement : MonoBehaviour
 {
     private PlayerInput _input;
     private Rigidbody _rb;
     private PlayerLook _playerLook;
-    private GrappleGun _grapple;
 
     [Header("Movement Variables")]
     [SerializeField] private float _moveSpeed = 10f;
@@ -32,15 +29,11 @@ public class PlayerMovement : NetworkBehaviour
         _input = GetComponent<PlayerInput>();
         _rb = GetComponent<Rigidbody>();
         _playerLook = GetComponent<PlayerLook>();
-        _grapple = GetComponentInChildren<GrappleGun>();
         _currentSpeed = _moveSpeed;
     }
 
     private void Update()
     {
-        if(!isLocalPlayer)
-            return;
-        
         _isGrounded = Physics.CheckSphere(_groundCheck.position, _checkRadius, _groundLayer);
         SpeedHandler();
 
@@ -53,8 +46,6 @@ public class PlayerMovement : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        if(!isLocalPlayer)
-            return;
         foreach (var menu in _menusToDiableMovement)
         {
             if (menu.gameObject.activeSelf)
@@ -86,15 +77,14 @@ public class PlayerMovement : NetworkBehaviour
 
         Vector3 moveDirection = (camForward * moveVector.y + camRight * moveVector.x);
         Vector3 horizontalVelocity = moveDirection * _currentSpeed;
-        if(!_grapple.MoveDisableGrapple)
-            _rb.linearVelocity = new Vector3(horizontalVelocity.x, _rb.linearVelocity.y, horizontalVelocity.z);
-        else
-            _rb.AddForce(moveDirection * _airControlStrength * _currentSpeed, ForceMode.Acceleration);
+        
+        _rb.linearVelocity = new Vector3(horizontalVelocity.x, _rb.linearVelocity.y, horizontalVelocity.z);
+        //Air control
+        // _rb.AddForce(moveDirection * _airControlStrength * _currentSpeed, ForceMode.Acceleration);
     }
     
     private void Jump(float jumpForce)
     {
         _rb.AddForce(Vector3.up*jumpForce, ForceMode.Impulse);
     }
-    
 }

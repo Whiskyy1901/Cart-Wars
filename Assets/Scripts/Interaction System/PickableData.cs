@@ -26,7 +26,7 @@ public class PickableData : ScriptableObject
 
     public void Pick()
     {
-        _pickable.CmdOnPickUp();
+        _pickable.OnPickUp();
     }
 
     public void Hold()
@@ -36,7 +36,7 @@ public class PickableData : ScriptableObject
 
     public void Release()
     {
-        _pickable.CmdOnRelease();
+        _pickable.OnRelease();
         ResetData();
 
     }

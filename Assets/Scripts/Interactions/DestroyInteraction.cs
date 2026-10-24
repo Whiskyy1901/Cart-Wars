@@ -1,10 +1,10 @@
-﻿using UnityEngine;
+using UnityEngine;
 
-public class DestroyInteraction : NetworkedInteractableBase
+public class DestroyInteraction : InteractableBase
 {
-    protected override void OnInteractServer()
+    protected override void OnInteractLogic()
     {
-        base.OnInteractServer();
+        base.OnInteractLogic();
         Destroy(this.gameObject);
     }
 }

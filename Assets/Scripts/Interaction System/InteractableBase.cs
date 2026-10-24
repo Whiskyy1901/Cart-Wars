@@ -1,11 +1,9 @@
 using UnityEngine;
 
-public class InteractableBase : MonoBehaviour, IInteractable
+public abstract class InteractableBase : MonoBehaviour, IInteractable
 {
-
     [Header("Interaction Settings")]
     [SerializeField] private float holdDuration = 1f;
-
     [SerializeField] private bool holdInteract = true;
     [SerializeField] private bool multipleUse = false;
     [SerializeField] private bool isInteractable = true;
@@ -18,11 +16,11 @@ public class InteractableBase : MonoBehaviour, IInteractable
     public bool IsInteractable => isInteractable;
     public string Tooltip => tooltip;
     public string SecondaryTooltip => secondarytooltip;
-    
-    protected void SetSecondaryTooltip(string value) => secondarytooltip = value;
 
-    public virtual void OnInteract()
+    public void OnInteract()
     {
-        
+        OnInteractLogic();
     }
+    
+    protected virtual void OnInteractLogic() { }
 }

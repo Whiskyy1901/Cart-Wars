@@ -1,7 +1,6 @@
-using Mirror;
 using UnityEngine;
 
-public class InteractionController : NetworkBehaviour
+public class InteractionController : MonoBehaviour
 {
    [Header("Data")]
    public InteractionInputData interactionInputData;
@@ -19,19 +18,14 @@ public class InteractionController : NetworkBehaviour
    private bool _isInteracting;
    private float _holdTime = 0f;
 
-   public override void OnStartLocalPlayer()
+   public void Start()
    {
       _camera = GetComponentInChildren<Camera>();
       _uiPanel.ResetUI();
-      var listener = _camera.GetComponent<AudioListener>();
-      if (listener != null)
-         listener.enabled = true;
    }
 
    private void Update()
    {
-      if (!isLocalPlayer)
-         return;
       CheckForInteractable();
       CheckForInteractableInput();
    }

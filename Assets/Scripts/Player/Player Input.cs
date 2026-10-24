@@ -1,9 +1,8 @@
-using Mirror;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerInput : NetworkBehaviour
+public class PlayerInput : MonoBehaviour
 {
     [SerializeField] private InputActionAsset _actionAsset;
     private InputAction _moveAction;
@@ -47,8 +46,6 @@ public class PlayerInput : NetworkBehaviour
 
     private void Update()
     {
-        if(!isLocalPlayer)
-            return;
         if(!_takingInput)
             return;
         _moveVector = _moveAction.ReadValue<Vector2>();

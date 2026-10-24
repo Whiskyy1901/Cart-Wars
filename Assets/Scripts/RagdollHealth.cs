@@ -13,7 +13,7 @@ public class RagdollHealth : HealthBase
     protected override void DeathSequence()
     {
         base.DeathSequence();
-        //_ragdoll._autoRecover = false;
+        _ragdoll.AutoRecover = false;
         _ragdoll.EnableRagdoll(true);
     }
 }
