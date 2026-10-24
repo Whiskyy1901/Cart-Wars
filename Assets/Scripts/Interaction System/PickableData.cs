@@ -17,9 +17,9 @@ public class PickableData : ScriptableObject
         return true;
     }
 
-    public bool IsSamePickable(Pickable _pickable)
+    public bool IsSamePickable(Pickable pickable)
     {
-        if(this._pickable == _pickable)
+        if(this._pickable == pickable)
             return true;
         return false;
     }

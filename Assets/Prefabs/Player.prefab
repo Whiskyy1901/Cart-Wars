@@ -1528,7 +1528,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   _moveSpeed: 10
   _sprintSpeed: 15
+  _grapple: {fileID: 0}
   _airControlStrength: 0.5
+  _maxAirSteerSpeed: 12
+  _postGrappleControlTime: 0.25
   _jumpPower: 5
   _groundCheck: {fileID: 5469288105378284747}
   _checkRadius: 0.2
@@ -10256,6 +10259,7 @@ GameObject:
   - component: {fileID: 3823025165338607754}
   - component: {fileID: 3231490966219015800}
   - component: {fileID: 7348924919007185698}
+  - component: {fileID: 8880337819996939078}
   m_Layer: 3
   m_Name: Grapple Gun
   m_TagString: Untagged
@@ -10467,6 +10471,30 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
+--- !u!114 &8880337819996939078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6628460208690015220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d47e5761b734394bbe16fc3a8434f37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GrappleGun
+  _grappleRange: 20
+  _grappleCooldown: 2
+  _shootPos: {fileID: 3818610086245157250}
+  _hookObject: {fileID: 2833208749704897748, guid: f4ff24b3bcca63d45800e5293349bcc8, type: 3}
+  _hookAttachLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  _spring: 400
+  _damper: 20
+  _massScale: 1
+  _reelSpeed: 5
+  _minReelDistance: 1
 --- !u!1 &6822169037570529699
 GameObject:
   m_ObjectHideFlags: 0

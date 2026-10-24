@@ -11,9 +11,16 @@ public class PlayerMovement : MonoBehaviour
     [Header("Movement Variables")]
     [SerializeField] private float _moveSpeed = 10f;
     [SerializeField] private float _sprintSpeed = 15f;
-    [SerializeField] private float _airControlStrength = 0.2f;
     private float _currentSpeed;
-    
+
+    [Header("Grapple Air Control")]
+    [SerializeField] private GrappleGun _grapple;
+    [SerializeField] private float _airControlStrength = 12f;
+    [SerializeField] private float _maxAirSteerSpeed = 12f;
+    [SerializeField] private float _postGrappleControlTime = 0.25f;
+    private bool _wasGrappling;
+    private float _postGrappleTimer;
+
     [Header("Jump Variables")]
     [SerializeField] private float _jumpPower = 5f;
     [SerializeField] private Transform _groundCheck;
@@ -30,6 +37,9 @@ public class PlayerMovement : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
         _playerLook = GetComponent<PlayerLook>();
         _currentSpeed = _moveSpeed;
+
+        if (_grapple == null)
+            _grapple = GetComponentInChildren<GrappleGun>();
     }
 
     private void Update()
@@ -59,7 +69,7 @@ public class PlayerMovement : MonoBehaviour
             }
         }
         if (_menuActive)
-            return; 
+            return;
         Movement(_input.MoveVector);
     }
 
@@ -74,17 +84,47 @@ public class PlayerMovement : MonoBehaviour
         Vector3 camRight = _playerLook.CameraForward.right;
         camForward.y = 0f;
         camRight.y = 0f;
+        camForward.Normalize();
+        camRight.Normalize();
 
         Vector3 moveDirection = (camForward * moveVector.y + camRight * moveVector.x);
-        Vector3 horizontalVelocity = moveDirection * _currentSpeed;
-        
-        _rb.linearVelocity = new Vector3(horizontalVelocity.x, _rb.linearVelocity.y, horizontalVelocity.z);
-        //Air control
-        // _rb.AddForce(moveDirection * _airControlStrength * _currentSpeed, ForceMode.Acceleration);
+        if (moveDirection.sqrMagnitude > 1f)
+            moveDirection.Normalize();
+
+        bool grappling = _grapple != null && _grapple.IsGrappling;
+
+        if (_wasGrappling && !grappling)
+            _postGrappleTimer = _postGrappleControlTime;
+        _wasGrappling = grappling;
+
+        if (_postGrappleTimer > 0f)
+            _postGrappleTimer -= Time.fixedDeltaTime;
+
+        if (!grappling && _postGrappleTimer <= 0f)
+        {
+            Vector3 horizontalVelocity = moveDirection * _currentSpeed;
+            _rb.linearVelocity = new Vector3(horizontalVelocity.x, _rb.linearVelocity.y, horizontalVelocity.z);
+        }
+        else
+        {
+            SteerInAir(moveDirection);
+        }
     }
-    
+
+    private void SteerInAir(Vector3 moveDirection)
+    {
+        if (moveDirection == Vector3.zero)
+            return;
+
+        float speedAlongInput = Vector3.Dot(_rb.linearVelocity, moveDirection.normalized);
+        if (speedAlongInput < _maxAirSteerSpeed)
+        {
+            _rb.AddForce(moveDirection * _airControlStrength, ForceMode.Acceleration);
+        }
+    }
+
     private void Jump(float jumpForce)
     {
-        _rb.AddForce(Vector3.up*jumpForce, ForceMode.Impulse);
+        _rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
     }
 }

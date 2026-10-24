@@ -171,9 +171,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff276f2d30f4b1c4d9f7e84e5656c5b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Pickable
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
 --- !u!54 &222367578
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1057,9 +1054,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff276f2d30f4b1c4d9f7e84e5656c5b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Pickable
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
 --- !u!54 &765841438
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1335,9 +1329,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3a2720b3b8746edb9d52178b5a851d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DestroyInteraction
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   holdDuration: 1
   holdInteract: 1
   multipleUse: 0
@@ -1430,9 +1421,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff276f2d30f4b1c4d9f7e84e5656c5b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Pickable
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
 --- !u!54 &874387622
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1604,6 +1592,63 @@ MonoBehaviour:
   rotationSensitivity: 0.01
   positionPrecision: 0.01
   scalePrecision: 0.01
+--- !u!1001 &895993066
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 723036540661538258, guid: 0d7f40c8e62abc44ea618f02d01aca3d, type: 3}
+      propertyPath: m_Name
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 4690242081811683479, guid: 0d7f40c8e62abc44ea618f02d01aca3d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 3.904195
+      objectReference: {fileID: 0}
+    - target: {fileID: 4690242081811683479, guid: 0d7f40c8e62abc44ea618f02d01aca3d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.84
+      objectReference: {fileID: 0}
+    - target: {fileID: 4690242081811683479, guid: 0d7f40c8e62abc44ea618f02d01aca3d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -3.9984484
+      objectReference: {fileID: 0}
+    - target: {fileID: 4690242081811683479, guid: 0d7f40c8e62abc44ea618f02d01aca3d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4690242081811683479, guid: 0d7f40c8e62abc44ea618f02d01aca3d, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4690242081811683479, guid: 0d7f40c8e62abc44ea618f02d01aca3d, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4690242081811683479, guid: 0d7f40c8e62abc44ea618f02d01aca3d, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4690242081811683479, guid: 0d7f40c8e62abc44ea618f02d01aca3d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4690242081811683479, guid: 0d7f40c8e62abc44ea618f02d01aca3d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4690242081811683479, guid: 0d7f40c8e62abc44ea618f02d01aca3d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 0d7f40c8e62abc44ea618f02d01aca3d, type: 3}
 --- !u!1 &953688672
 GameObject:
   m_ObjectHideFlags: 0
@@ -1846,9 +1891,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff276f2d30f4b1c4d9f7e84e5656c5b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Pickable
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
 --- !u!54 &1256947785
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2414,9 +2456,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7229784ef78cb6744b53265e90c6545f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DialogueInteraction
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   holdDuration: 1
   holdInteract: 1
   multipleUse: 0
@@ -2426,6 +2465,7 @@ MonoBehaviour:
   _messageStrings:
   - Hii
   - How are you doing?
+  _dialoguePanel: {fileID: 0}
 --- !u!114 &1902783047
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2592,3 +2632,4 @@ SceneRoots:
   - {fileID: 1652669781}
   - {fileID: 953688676}
   - {fileID: 1448425130}
+  - {fileID: 895993066}
