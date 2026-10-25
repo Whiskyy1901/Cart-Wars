@@ -16,19 +16,19 @@ public class WallRun : MonoBehaviour
     [SerializeField] private LayerMask _groundLayers;
     [SerializeField] private float _wallCheckDistance = 0.8f;
     [SerializeField] private float _minHeightAboveGround = 1.5f;
-    [SerializeField] private float _maxWallNormalY = 0.2f;      // rejects slopes and floors
+    [SerializeField] private float _maxWallNormalY = 0.2f;
 
     [Header("Wall Run")]
     [SerializeField] private float _wallRunSpeed = 12f;
-    [SerializeField] private float _wallStickForce = 20f;       // pushes you into the wall
-    [SerializeField] private float _wallGravity = 2f;           // downward pull while running
+    [SerializeField] private float _wallStickForce = 20f;
+    [SerializeField] private float _wallGravity = 2f;
     [SerializeField] private float _maxWallRunTime = 2.5f;
     [SerializeField] private float _minForwardInput = 0.1f;
 
     [Header("Wall Jump")]
     [SerializeField] private float _wallJumpUpForce = 7f;
     [SerializeField] private float _wallJumpSideForce = 9f;
-    [SerializeField] private float _exitControlLockTime = 0.3f; // blocks instant re-attach
+    [SerializeField] private float _exitControlLockTime = 0.3f;
     [SerializeField] private float _wallRunCooldown = 0.3f;
 
     [Header("Camera")]
@@ -60,7 +60,6 @@ public class WallRun : MonoBehaviour
 
     private void Update()
     {
-        // Input is read in Update so a press is never missed between physics steps
         if (_input.JumpAction.WasPressedThisFrame())
             _jumpQueued = true;
 
@@ -145,7 +144,6 @@ public class WallRun : MonoBehaviour
         _wallRunTimer = _maxWallRunTime;
         _rb.useGravity = false;
 
-        // Kill vertical speed so you don't carry a fall or jump into the run
         Vector3 v = _rb.linearVelocity;
         _rb.linearVelocity = new Vector3(v.x, 0f, v.z);
     }
@@ -154,17 +152,14 @@ public class WallRun : MonoBehaviour
     {
         _wallRunTimer -= Time.fixedDeltaTime;
 
-        // Direction along the wall, flipped to match where the player is facing
         Vector3 wallForward = Vector3.Cross(_wallNormal, Vector3.up);
         if (Vector3.Dot(wallForward, transform.forward) < 0f)
             wallForward = -wallForward;
 
-        // Keep the existing vertical speed so gravity can slowly pull you down
         float verticalSpeed = _rb.linearVelocity.y;
         Vector3 alongWall = wallForward * _wallRunSpeed;
         _rb.linearVelocity = new Vector3(alongWall.x, verticalSpeed, alongWall.z);
 
-        // Light custom gravity and a push into the wall to stay attached
         _rb.AddForce(Vector3.down * _wallGravity, ForceMode.Acceleration);
         _rb.AddForce(-_wallNormal * _wallStickForce, ForceMode.Acceleration);
     }
@@ -175,7 +170,6 @@ public class WallRun : MonoBehaviour
 
         StopWallRun(true);
 
-        // Reset vertical speed so the jump height is consistent
         Vector3 v = _rb.linearVelocity;
         _rb.linearVelocity = new Vector3(v.x, 0f, v.z);
         _rb.AddForce(jumpDir, ForceMode.Impulse);

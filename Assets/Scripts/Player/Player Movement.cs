@@ -51,7 +51,6 @@ public class PlayerMovement : MonoBehaviour
 
         bool wallRunning = _wallRun != null && _wallRun.IsWallRunning;
 
-        // While wall running, the jump input belongs to WallRun (wall jump)
         if (_input.JumpAction.WasPressedThisFrame() && _isGrounded && !wallRunning)
         {
             _isGrounded = false;
@@ -85,7 +84,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void Movement(Vector2 moveVector)
     {
-        // WallRun fully drives the velocity while active
         if (_wallRun != null && _wallRun.IsWallRunning)
             return;
 
@@ -133,7 +131,7 @@ public class PlayerMovement : MonoBehaviour
             _rb.AddForce(moveDirection * _airControlStrength, ForceMode.Acceleration);
         }
     }
-
+    
     private void Jump(float jumpForce)
     {
         _rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
