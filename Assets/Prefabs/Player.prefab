@@ -1471,6 +1471,7 @@ GameObject:
   - component: {fileID: 4928133697780433230}
   - component: {fileID: 1248117610202170860}
   - component: {fileID: 9002367814482988200}
+  - component: {fileID: 4062964930305934504}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -1533,6 +1534,9 @@ MonoBehaviour:
   _maxAirSteerSpeed: 12
   _postGrappleControlTime: 0.25
   _jumpPower: 5
+  _airJumpPower: 5
+  _maxJumps: 2
+  _resetJumpsOnWallRun: 1
   _groundCheck: {fileID: 5469288105378284747}
   _checkRadius: 0.2
   _groundLayer:
@@ -1662,6 +1666,39 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 2, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4062964930305934504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 723036540661538258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed6d78a921244024bb8aa655e080086e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WallRun
+  _grapple: {fileID: 0}
+  _wallLayers:
+    serializedVersion: 2
+    m_Bits: 1024
+  _groundLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  _wallCheckDistance: 0.8
+  _minHeightAboveGround: 1.5
+  _maxWallNormalY: 0.2
+  _wallRunSpeed: 12
+  _wallStickForce: 20
+  _wallGravity: 2
+  _maxWallRunTime: 2.5
+  _minForwardInput: 0.1
+  _wallJumpUpForce: 7
+  _wallJumpSideForce: 9
+  _exitControlLockTime: 0.3
+  _wallRunCooldown: 0.3
+  _cameraTiltAngle: 12
+  _tiltSpeed: 8
 --- !u!1 &893344599229835188
 GameObject:
   m_ObjectHideFlags: 0
@@ -10388,11 +10425,11 @@ MonoBehaviour:
   _aimRadius: 0.3
   _aimLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 4294967295
   _hookableLayers:
     serializedVersion: 2
-    m_Bits: 0
-  _reelInAcceleration: 0
+    m_Bits: 4294967295
+  _reelInAcceleration: 5
   _minRopeLength: 1.5
   _retractionTime: 0.25
 --- !u!1 &6822169037570529699
@@ -14957,6 +14994,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1413518249603818566, guid: f4ff24b3bcca63d45800e5293349bcc8, type: 3}
+    - {fileID: -6919588147926132447, guid: f4ff24b3bcca63d45800e5293349bcc8, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

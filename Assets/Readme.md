@@ -13,6 +13,7 @@ Status: Actively in development.
 1. Active ragdolls for NPCs/customers
 2. Interaction system (order/buy menu, dialogue menu)
 3. Grappling hook, used to traverse the environment quickly
+4. Wall running, Double Jumping
 
 ## Planned Features
 
@@ -20,7 +21,7 @@ Status: Actively in development.
 2. Customer NPCs who place and receive orders
 3. Earnings and rewards for completed orders
 4. Delivery timers and performance ratings
-5. Expanded map with multiple delivery routes
+5. Maps with multiple delivery routes
 6. Progression and win condition
 
 ## How to Run
@@ -31,13 +32,14 @@ Status: Actively in development.
 
 ## Controls
 
-| Action   | Input           |
-|----------|-----------------|
-| Move     | WASD            |
-| Look     | Mouse           |
-| Interact | Hold E          |
-| Pick up  | F               |
-| Grapple  | Hold Left Click |
+| Action      | Input           |
+|-------------|-----------------|
+| Move        | WASD            |
+| Look        | Mouse           |
+| Interact    | Hold E          |
+| Pick up     | F               |
+| Grapple     | Hold Left Click |
+| Level Reset | R               |
 
 ## Known Limitations
 

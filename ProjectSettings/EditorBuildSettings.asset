@@ -9,8 +9,8 @@ EditorBuildSettings:
     path: Assets/Scenes/Main Menu.unity
     guid: f67d8bffdd0b4db45a06451fe183b7f6
   - enabled: 1
-    path: Assets/Scenes/Showcase Scene.unity
-    guid: 74133e8273499b544a331158a87b3495
+    path: Assets/Scenes/Movement Showcase Week 6.unity
+    guid: 42f35e4633b14974ea10b5e01981d44e
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

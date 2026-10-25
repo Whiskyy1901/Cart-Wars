@@ -1,5 +1,5 @@
+using System;
 using UnityEngine;
-
 
 [RequireComponent(typeof(PlayerInput))]
 public class PlayerMovement : MonoBehaviour
@@ -24,10 +24,15 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Jump Variables")]
     [SerializeField] private float _jumpPower = 5f;
+    [SerializeField] private float _airJumpPower = 5f;
+    [SerializeField, Min(1)] private int _maxJumps = 2;
+    [SerializeField] private bool _resetJumpsOnWallRun = true;
     [SerializeField] private Transform _groundCheck;
     [SerializeField] private float _checkRadius = 0.2f;
     [SerializeField] private LayerMask _groundLayer;
     private bool _isGrounded;
+    private bool _wasGrounded;
+    private int _jumpsUsed;
 
     [SerializeField] private GameObject[] _menusToDiableMovement;
     private bool _menuActive;
@@ -51,11 +56,22 @@ public class PlayerMovement : MonoBehaviour
 
         bool wallRunning = _wallRun != null && _wallRun.IsWallRunning;
 
-        if (_input.JumpAction.WasPressedThisFrame() && _isGrounded && !wallRunning)
+        if (_isGrounded && _rb.linearVelocity.y <= 0.1f)
+            _jumpsUsed = 0;
+        else if (_wasGrounded && !_isGrounded && _jumpsUsed == 0)
+            _jumpsUsed = 1;
+
+        if (wallRunning && _resetJumpsOnWallRun)
+            _jumpsUsed = 0;
+
+        if (_input.JumpAction.WasPressedThisFrame() && !wallRunning && _jumpsUsed < _maxJumps)
         {
-            _isGrounded = false;
-            Jump(_jumpPower);
+            bool airJump = _jumpsUsed > 0;
+            _jumpsUsed++;
+            Jump(airJump ? _airJumpPower : _jumpPower);
         }
+
+        _wasGrounded = _isGrounded;
     }
 
     private void FixedUpdate()
@@ -131,9 +147,10 @@ public class PlayerMovement : MonoBehaviour
             _rb.AddForce(moveDirection * _airControlStrength, ForceMode.Acceleration);
         }
     }
-    
+
     private void Jump(float jumpForce)
     {
+        _rb.linearVelocity = new Vector3(_rb.linearVelocity.x, 0f, _rb.linearVelocity.z);
         _rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
     }
 }

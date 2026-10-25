@@ -123,7 +123,6 @@ public class GrappleGun : MonoBehaviour
         bool hitSomething = Physics.SphereCast(origin, _aimRadius, direction, out RaycastHit hit,
             _grappleRange, _aimLayers, QueryTriggerInteraction.Ignore);
 
-        // SphereCast gives no valid point if it starts inside a collider
         if (hitSomething && hit.distance <= 0f)
         {
             hitSomething = Physics.Raycast(origin, direction, out hit,
