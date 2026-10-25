@@ -672,16 +672,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6317536011302347928, guid: 0d7f40c8e62abc44ea618f02d01aca3d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.48
+      value: 1.52
       objectReference: {fileID: 0}
     - target: {fileID: 6317536011302347928, guid: 0d7f40c8e62abc44ea618f02d01aca3d, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -3.21
+      value: -4.43
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 723036540661538258, guid: 0d7f40c8e62abc44ea618f02d01aca3d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 582192785}
     - targetCorrespondingSourceObject: {fileID: 6628460208690015220, guid: 0d7f40c8e62abc44ea618f02d01aca3d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 502749970}
@@ -697,6 +700,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a3c7ee6a806cf645bf2d3d8632a445e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DialogueUIPanel
+--- !u!1 &582192784 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 723036540661538258, guid: 0d7f40c8e62abc44ea618f02d01aca3d, type: 3}
+  m_PrefabInstance: {fileID: 582192782}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &582192785
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 582192784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed6d78a921244024bb8aa655e080086e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WallRun
+  _grapple: {fileID: 0}
+  _wallLayers:
+    serializedVersion: 2
+    m_Bits: 1024
+  _groundLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  _wallCheckDistance: 0.8
+  _minHeightAboveGround: 1.5
+  _maxWallNormalY: 0.2
+  _wallRunSpeed: 12
+  _wallStickForce: 20
+  _wallGravity: 2
+  _maxWallRunTime: 2.5
+  _minForwardInput: 0.1
+  _wallJumpUpForce: 7
+  _wallJumpSideForce: 9
+  _exitControlLockTime: 0.3
+  _wallRunCooldown: 0.3
+  _cameraTiltAngle: 12
+  _tiltSpeed: 8
 --- !u!1 &612440542
 GameObject:
   m_ObjectHideFlags: 0
@@ -4946,7 +4987,7 @@ GameObject:
   - component: {fileID: 1713710337}
   - component: {fileID: 1713710336}
   - component: {fileID: 1713710335}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Grapple Point
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5040,8 +5081,8 @@ Transform:
   m_GameObject: {fileID: 1713710334}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8, y: 4.5, z: 22.5}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -5.09, y: 4.5, z: 37.58}
+  m_LocalScale: {x: 1, y: 10, z: 40}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}

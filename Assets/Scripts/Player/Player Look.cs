@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 public class PlayerLook : MonoBehaviour
 {
     private PlayerInput _input;
+    private WallRun _wallRun;
     [Header("Camera Variables")]
     [SerializeField] float _sensitivity;
     [SerializeField] private float _maxPitch = 80f;
@@ -26,6 +27,7 @@ public class PlayerLook : MonoBehaviour
     private void Awake()
     {
         _input  = GetComponent<PlayerInput>();
+        _wallRun = GetComponent<WallRun>();
         _cameraForward = _camera.gameObject.transform;
 
         Cursor.lockState = CursorLockMode.Locked;
@@ -62,7 +64,10 @@ public class PlayerLook : MonoBehaviour
 
         _pitch -= mouseY;
         _pitch = Mathf.Clamp(_pitch, _minPitch, _maxPitch);
-        _camera.gameObject.transform.localRotation = Quaternion.Euler(_pitch, 0f, 0f);
+
+        // Roll comes from the wall run tilt; CameraShake multiplies on top in its own LateUpdate
+        float tilt = _wallRun != null ? _wallRun.CameraTilt : 0f;
+        _camera.gameObject.transform.localRotation = Quaternion.Euler(_pitch, 0f, tilt);
 
         gameObject.transform.Rotate(Vector3.up * mouseX);
 

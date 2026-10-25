@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
     private PlayerInput _input;
     private Rigidbody _rb;
     private PlayerLook _playerLook;
+    private WallRun _wallRun;
 
     [Header("Movement Variables")]
     [SerializeField] private float _moveSpeed = 10f;
@@ -36,6 +37,7 @@ public class PlayerMovement : MonoBehaviour
         _input = GetComponent<PlayerInput>();
         _rb = GetComponent<Rigidbody>();
         _playerLook = GetComponent<PlayerLook>();
+        _wallRun = GetComponent<WallRun>();
         _currentSpeed = _moveSpeed;
 
         if (_grapple == null)
@@ -47,7 +49,10 @@ public class PlayerMovement : MonoBehaviour
         _isGrounded = Physics.CheckSphere(_groundCheck.position, _checkRadius, _groundLayer);
         SpeedHandler();
 
-        if (_input.JumpAction.WasPressedThisFrame() && _isGrounded)
+        bool wallRunning = _wallRun != null && _wallRun.IsWallRunning;
+
+        // While wall running, the jump input belongs to WallRun (wall jump)
+        if (_input.JumpAction.WasPressedThisFrame() && _isGrounded && !wallRunning)
         {
             _isGrounded = false;
             Jump(_jumpPower);
@@ -80,6 +85,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void Movement(Vector2 moveVector)
     {
+        // WallRun fully drives the velocity while active
+        if (_wallRun != null && _wallRun.IsWallRunning)
+            return;
+
         Vector3 camForward = _playerLook.CameraForward.forward;
         Vector3 camRight = _playerLook.CameraForward.right;
         camForward.y = 0f;
@@ -100,7 +109,9 @@ public class PlayerMovement : MonoBehaviour
         if (_postGrappleTimer > 0f)
             _postGrappleTimer -= Time.fixedDeltaTime;
 
-        if (!grappling && _postGrappleTimer <= 0f)
+        bool wallJumpWindow = _wallRun != null && _wallRun.IsInExitWindow;
+
+        if (!grappling && !wallJumpWindow && _postGrappleTimer <= 0f)
         {
             Vector3 horizontalVelocity = moveDirection * _currentSpeed;
             _rb.linearVelocity = new Vector3(horizontalVelocity.x, _rb.linearVelocity.y, horizontalVelocity.z);
