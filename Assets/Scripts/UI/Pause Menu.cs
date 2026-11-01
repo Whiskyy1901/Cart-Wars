@@ -14,11 +14,13 @@ public class PauseMenu : MonoBehaviour
 
     public void Restart()
     {
+        Time.timeScale = 1;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void MainMenu()
     {
+        Time.timeScale = 1;
         SceneManager.LoadScene(0);
     }
 
@@ -27,7 +29,7 @@ public class PauseMenu : MonoBehaviour
         _pausePanel.SetActive(true);
         
         Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.lockState = CursorLockMode.None;
         
         Time.timeScale = 0;
 
