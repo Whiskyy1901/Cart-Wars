@@ -1,20 +1,36 @@
+using System;
 using UnityEngine;
 
+[RequireComponent(typeof(LineRenderer))]
 public class GrappleHook : MonoBehaviour
 {
-    [Header("Flight")]
-    [SerializeField] private float _launchSpeed = 80f;
+    private enum HookState { Idle, Outbound, Stuck, Returning }
 
-    private GrappleGun _gun;
+    public event Action<Vector3> Attached;
+    public event Action Returned;
+
+    [SerializeField] private float _launchSpeed = 80f;
+    [SerializeField] private float _retractionTime = 0.25f;
+
+    private LineRenderer _line;
+    private Transform _muzzle;
+    private HookState _state;
 
     private Vector3 _targetPoint;
     private Vector3 _surfaceNormal;
     private bool _attaches;
-    private bool _isLaunched;
 
-    public void Initialize(GrappleGun gun)
+    private Vector3 _returnStart;
+    private float _returnTimer;
+
+    public void Initialize(Transform muzzle)
     {
-        _gun = gun;
+        _muzzle = muzzle;
+
+        _line = GetComponent<LineRenderer>();
+        _line.useWorldSpace = true;
+        _line.positionCount = 2;
+        //_line.
 
         if (TryGetComponent(out Rigidbody rb))
         {
@@ -24,6 +40,8 @@ public class GrappleHook : MonoBehaviour
 
         if (TryGetComponent(out Collider col))
             col.enabled = false;
+
+        transform.SetParent(null);
     }
 
     public void Launch(Vector3 targetPoint, Vector3 surfaceNormal, bool attaches)
@@ -32,49 +50,80 @@ public class GrappleHook : MonoBehaviour
         _surfaceNormal = surfaceNormal;
         _attaches = attaches;
 
-        transform.SetParent(null);
-
         Vector3 toTarget = targetPoint - transform.position;
         if (toTarget.sqrMagnitude > 0.0001f)
             transform.rotation = Quaternion.LookRotation(toTarget);
 
-        _isLaunched = true;
+        _state = HookState.Outbound;
     }
 
-    public void Cancel()
+    public void Retract()
     {
-        if (_isLaunched)
-            EndLaunch(false);
+        if (_state != HookState.Outbound && _state != HookState.Stuck)
+            return;
+
+        _returnStart = transform.position;
+        _returnTimer = 0f;
+        _state = HookState.Returning;
     }
 
-    public void ResetToRest(Transform parent, Vector3 localPos, Quaternion localRot)
+    public void ResetToIdle()
     {
-        _isLaunched = false;
-
-        transform.SetParent(parent);
-        transform.localPosition = localPos;
-        transform.localRotation = localRot;
+        _state = HookState.Idle;
     }
 
     private void Update()
     {
-        if (!_isLaunched)
-            return;
-
-        transform.position = Vector3.MoveTowards(transform.position, _targetPoint, _launchSpeed * Time.deltaTime);
-
-        if ((transform.position - _targetPoint).sqrMagnitude <= 0.0001f)
+        switch (_state)
         {
-            if (_attaches)
-                transform.rotation = Quaternion.LookRotation(-_surfaceNormal);
+            case HookState.Outbound:
+                transform.position = Vector3.MoveTowards(transform.position, _targetPoint, _launchSpeed * Time.deltaTime);
 
-            EndLaunch(_attaches);
+                if ((transform.position - _targetPoint).sqrMagnitude <= 0.0001f)
+                    OnReachedTarget();
+                break;
+
+            case HookState.Returning:
+            {
+                _returnTimer += Time.deltaTime;
+                float t = Mathf.Clamp01(_returnTimer / Mathf.Max(0.01f, _retractionTime));
+                transform.position = Vector3.Lerp(_returnStart, _muzzle.position, t);
+
+                if (t >= 1f)
+                {
+                    _state = HookState.Idle;
+                    Returned?.Invoke();
+                }
+                break;
+            }
         }
     }
 
-    private void EndLaunch(bool success)
+    private void LateUpdate()
     {
-        _isLaunched = false;
-        _gun.OnLaunchFinished(success, transform.position);
+        _line.enabled = _state != HookState.Idle;
+    
+        if (_state == HookState.Idle)
+        {
+            transform.SetPositionAndRotation(_muzzle.position, _muzzle.rotation);
+            return;
+        }
+    
+        _line.SetPosition(0, _muzzle.position);
+        _line.SetPosition(1, transform.position);
+    }
+
+    private void OnReachedTarget()
+    {
+        if (_attaches)
+        {
+            transform.rotation = Quaternion.LookRotation(-_surfaceNormal);
+            _state = HookState.Stuck;
+            Attached?.Invoke(transform.position);
+        }
+        else
+        {
+            Retract();
+        }
     }
 }

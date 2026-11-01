@@ -8,11 +8,33 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody _rb;
     private PlayerLook _playerLook;
     private WallRun _wallRun;
+    private BoxCollider _collider;
 
     [Header("Movement Variables")]
     [SerializeField] private float _moveSpeed = 10f;
     [SerializeField] private float _sprintSpeed = 15f;
+    [SerializeField] private bool _toggleSprint;
+    [SerializeField] private float _crouchSpeed = 7f;
+    [SerializeField] private bool _toggleCrouch;
     private float _currentSpeed;
+
+    [Header("Crouch Collider")]
+    [SerializeField] private float _crouchHeight = 1.5f;
+    [SerializeField] private float _crouchTransitionSpeed = 8f; // units per second
+    [SerializeField] private LayerMask _ceilingMask;            // layers that block standing up (NOT the player layer)
+    private bool _isCrouching;
+    private Vector3 _standSize;
+    private Vector3 _standCenter;
+
+    [Header("Crouch Visuals")]
+    [SerializeField] private Transform _eyes;
+    [SerializeField] private Transform _graphics;
+    [SerializeField] private Transform _holdPoint;
+    [SerializeField] private float _visualSmoothing = 20f;
+    private Vector3 _eyesStandPos;
+    private Vector3 _holdStandPos;
+    private Vector3 _graphicsStandPos;
+    private Vector3 _graphicsStandScale;
 
     [Header("Grapple Air Control")]
     [SerializeField] private GrappleGun _grapple;
@@ -43,14 +65,38 @@ public class PlayerMovement : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
         _playerLook = GetComponent<PlayerLook>();
         _wallRun = GetComponent<WallRun>();
+        _collider = GetComponent<BoxCollider>();
         _currentSpeed = _moveSpeed;
+
+        // Remember the standing collider so nothing is hardcoded
+        _standSize = _collider.size;
+        _standCenter = _collider.center;
+
+        // Remember the standing pose of everything that should follow the crouch
+        if (_eyes != null)
+            _eyesStandPos = _eyes.localPosition;
+        if (_holdPoint != null)
+            _holdStandPos = _holdPoint.localPosition;
+        if (_graphics != null)
+        {
+            _graphicsStandPos = _graphics.localPosition;
+            _graphicsStandScale = _graphics.localScale;
+        }
 
         if (_grapple == null)
             _grapple = GetComponentInChildren<GrappleGun>();
+
+        // Apply toggle settings before the first input read
+        _input.ToggleSprint = _toggleSprint;
+        _input.ToggleCrouch = _toggleCrouch;
     }
 
     private void Update()
     {
+        // Sync toggle settings every frame so they can be changed at runtime
+        _input.ToggleSprint = _toggleSprint;
+        _input.ToggleCrouch = _toggleCrouch;
+
         _isGrounded = Physics.CheckSphere(_groundCheck.position, _checkRadius, _groundLayer);
         SpeedHandler();
 
@@ -76,6 +122,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        HandleCrouch();
+
         foreach (var menu in _menusToDiableMovement)
         {
             if (menu.gameObject.activeSelf)
@@ -93,9 +141,71 @@ public class PlayerMovement : MonoBehaviour
         Movement(_input.MoveVector);
     }
 
+    private void LateUpdate()
+    {
+        UpdateCrouchVisuals();
+    }
+
+    private void HandleCrouch()
+    {
+        if (_input.IsCrouching)
+            _isCrouching = true;
+        else if (_isCrouching && CanStandUp())
+            _isCrouching = false;
+
+        float targetHeight = _isCrouching ? _crouchHeight : _standSize.y;
+        Vector3 size = _collider.size;
+
+        if (Mathf.Approximately(size.y, targetHeight))
+            return;
+
+        size.y = Mathf.MoveTowards(size.y, targetHeight, _crouchTransitionSpeed * Time.fixedDeltaTime);
+        _collider.size = size;
+
+        Vector3 center = _standCenter;
+        center.y -= (_standSize.y - size.y) * 0.5f;
+        _collider.center = center;
+    }
+
+    private bool CanStandUp()
+    {
+        Vector3 center = transform.TransformPoint(_standCenter);
+        Vector3 halfExtents = Vector3.Scale(_standSize, transform.lossyScale) * 0.5f - Vector3.one * 0.02f;
+
+        return !Physics.CheckBox(center, halfExtents, transform.rotation, _ceilingMask, QueryTriggerInteraction.Ignore);
+    }
+
+    private void UpdateCrouchVisuals()
+    {
+        float height = _collider.size.y;
+        float lost = _standSize.y - height;
+        float ratio = height / _standSize.y;
+        float k = 1f - Mathf.Exp(-_visualSmoothing * Time.deltaTime);
+
+        if (_eyes != null)
+            _eyes.localPosition = Vector3.Lerp(_eyes.localPosition, _eyesStandPos + Vector3.down * lost, k);
+
+        if (_holdPoint != null)
+            _holdPoint.localPosition = Vector3.Lerp(_holdPoint.localPosition, _holdStandPos + Vector3.down * lost, k);
+
+        if (_graphics != null)
+        {
+            Vector3 targetScale = new Vector3(_graphicsStandScale.x, _graphicsStandScale.y * ratio, _graphicsStandScale.z);
+            Vector3 targetPos = _graphicsStandPos + Vector3.down * (lost * 0.5f);
+
+            _graphics.localScale = Vector3.Lerp(_graphics.localScale, targetScale, k);
+            _graphics.localPosition = Vector3.Lerp(_graphics.localPosition, targetPos, k);
+        }
+    }
+
     private void SpeedHandler()
     {
-        _currentSpeed = _input.IsSprinting ? _sprintSpeed : _moveSpeed;
+        if (_isCrouching)
+            _currentSpeed = _crouchSpeed;
+        else if (_input.IsSprinting)
+            _currentSpeed = _sprintSpeed;
+        else
+            _currentSpeed = _moveSpeed;
     }
 
     private void Movement(Vector2 moveVector)

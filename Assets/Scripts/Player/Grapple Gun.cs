@@ -3,13 +3,7 @@ using UnityEngine;
 
 public class GrappleGun : MonoBehaviour
 {
-    public enum GrapplePhase
-    {
-        Waiting,
-        Launching,
-        Grappling,
-        Retracting
-    }
+    public enum GrapplePhase { Waiting, Flying, Grappling}
 
     public event Action<GrapplePhase, GrapplePhase> PhaseChanged;
 
@@ -17,48 +11,42 @@ public class GrappleGun : MonoBehaviour
     public Vector3 GrapplePoint { get; private set; }
 
     public bool IsGrappling => CurrentPhase == GrapplePhase.Grappling;
-    public Transform HookTransform => _hook.transform;
 
     [Header("References")]
     [SerializeField] private GrappleHook _hook;
+    [SerializeField] private Transform _muzzle;
 
     [Header("Aim Settings")]
     [SerializeField] private float _grappleRange = 40f;
     [SerializeField] private float _aimRadius = 0.3f;
-    [Tooltip("Everything the aim cast can hit. Exclude the player's own layer.")]
     [SerializeField] private LayerMask _aimLayers;
-    [Tooltip("Subset of surfaces the hook is allowed to attach to.")]
     [SerializeField] private LayerMask _hookableLayers;
 
     [Header("Rope Settings")]
     [SerializeField] private float _reelInAcceleration = 20f;
     [SerializeField] private float _minRopeLength = 1.5f;
-    [SerializeField] private float _retractionTime = 0.25f;
 
     private PlayerInput _input;
     private PlayerLook _playerLook;
-    private Rigidbody _playerRb;
-
-    private Vector3 _hookRestLocalPos;
-    private Quaternion _hookRestLocalRot;
+    private Rigidbody _rb;
 
     private float _ropeLength;
-    private bool _isRopeInTension;
-    private bool _isReelingIn;
     private float _reelInSpeed;
-    private float _retractTimer;
 
     private void Awake()
     {
         _input = GetComponentInParent<PlayerInput>();
         _playerLook = GetComponentInParent<PlayerLook>();
-        _playerRb = GetComponentInParent<Rigidbody>();
+        _rb = GetComponentInParent<Rigidbody>();
 
-        _hookRestLocalPos = _hook.transform.localPosition;
-        _hookRestLocalRot = _hook.transform.localRotation;
+        _hook.Initialize(_muzzle);
+        _hook.Attached += OnHookAttached;
+        _hook.Returned += OnHookReturned;
+    }
 
-        _hook.Initialize(this);
-        CurrentPhase = GrapplePhase.Waiting;
+    private void OnEnable()
+    {
+        _hook.gameObject.SetActive(true);
     }
 
     private void Update()
@@ -72,46 +60,44 @@ public class GrappleGun : MonoBehaviour
                     FireHook();
                 break;
 
-            case GrapplePhase.Launching:
+            case GrapplePhase.Flying:
                 if (fire.WasReleasedThisFrame())
-                    _hook.Cancel();
+                    _hook.Retract();
                 break;
 
             case GrapplePhase.Grappling:
                 if (!fire.IsPressed())
                     BeginRetract();
                 break;
-
-            case GrapplePhase.Retracting:
-                UpdateRetraction();
-                break;
         }
     }
 
     private void FixedUpdate()
     {
-        if (CurrentPhase != GrapplePhase.Grappling)
+        if (!IsGrappling)
             return;
 
-        Vector3 toPoint = GrapplePoint - _playerRb.position;
-        Vector3 direction = toPoint.normalized;
-        _isRopeInTension = toPoint.sqrMagnitude > _ropeLength * _ropeLength;
-
-        ApplyGrappleForces(direction);
-
-        if (_isRopeInTension && Vector3.Dot(_playerRb.linearVelocity, toPoint) <= 0f)
-            TugPlayer(direction);
-
-        if (_isReelingIn && _ropeLength > _minRopeLength)
+        if (_ropeLength > _minRopeLength)
         {
             _reelInSpeed += _reelInAcceleration * Time.fixedDeltaTime;
-            _ropeLength -= _reelInSpeed * Time.fixedDeltaTime;
+            _ropeLength = Mathf.Max(_minRopeLength, _ropeLength - _reelInSpeed * Time.fixedDeltaTime);
         }
         else
         {
-            _isReelingIn = false;
-            _ropeLength = _minRopeLength;
+            _reelInSpeed = 0f;
         }
+
+        Vector3 toPoint = GrapplePoint - _rb.position;
+        float distance = toPoint.magnitude;
+        if (distance <= _ropeLength)
+            return;
+
+        Vector3 direction = toPoint / distance;
+        float inwardSpeed = Vector3.Dot(_rb.linearVelocity, direction);
+
+        // Cancel outward velocity, keep inward, and never move slower than the reel
+        _rb.linearVelocity += direction * (Mathf.Max(inwardSpeed, _reelInSpeed) - inwardSpeed);
+        _rb.position = GrapplePoint - direction * _ropeLength;
     }
 
     private void FireHook()
@@ -123,6 +109,7 @@ public class GrappleGun : MonoBehaviour
         bool hitSomething = Physics.SphereCast(origin, _aimRadius, direction, out RaycastHit hit,
             _grappleRange, _aimLayers, QueryTriggerInteraction.Ignore);
 
+        // A sphere that starts inside a collider reports distance 0 and no usable point
         if (hitSomething && hit.distance <= 0f)
         {
             hitSomething = Physics.Raycast(origin, direction, out hit,
@@ -134,7 +121,7 @@ public class GrappleGun : MonoBehaviour
         Vector3 surfaceNormal = hitSomething ? hit.normal : -direction;
 
         _hook.Launch(targetPoint, surfaceNormal, canAttach);
-        SetPhase(GrapplePhase.Launching);
+        SetPhase(GrapplePhase.Flying);
     }
 
     private bool IsHookable(int layer)
@@ -142,74 +129,23 @@ public class GrappleGun : MonoBehaviour
         return (_hookableLayers.value & (1 << layer)) != 0;
     }
 
-    public void OnLaunchFinished(bool success, Vector3 point)
+    private void OnHookAttached(Vector3 point)
     {
-        if (CurrentPhase != GrapplePhase.Launching)
-            return;
-
         GrapplePoint = point;
-
-        if (success)
-            StartGrapple();
-        else
-            BeginRetract();
-    }
-
-    private void StartGrapple()
-    {
-        _ropeLength = Mathf.Max(_minRopeLength, Vector3.Distance(_playerRb.position, GrapplePoint));
-        _isReelingIn = true;
+        _ropeLength = Mathf.Max(_minRopeLength, Vector3.Distance(_rb.position, point));
         _reelInSpeed = 0f;
-        _isRopeInTension = false;
-
         SetPhase(GrapplePhase.Grappling);
     }
 
-    private void ApplyGrappleForces(Vector3 direction)
+    private void OnHookReturned()
     {
-        if (!_isRopeInTension)
-            return;
-
-        float theta = Vector3.Angle(direction, Vector3.up) * Mathf.Deg2Rad;
-        float centripetal = _playerRb.linearVelocity.sqrMagnitude / _ropeLength;
-        float tension = Mathf.Max(0f, centripetal + Physics.gravity.magnitude * Mathf.Cos(theta));
-
-        _playerRb.AddForce(direction * tension, ForceMode.Acceleration);
-
-        if (_isReelingIn)
-            _playerRb.AddForce(direction * _reelInAcceleration, ForceMode.Acceleration);
-    }
-
-    private void TugPlayer(Vector3 direction)
-    {
-        _playerRb.linearVelocity = Vector3.ProjectOnPlane(_playerRb.linearVelocity, direction);
-        _playerRb.position = GrapplePoint - direction * _ropeLength;
+        SetPhase(GrapplePhase.Waiting);
     }
 
     private void BeginRetract()
     {
-        _retractTimer = 0f;
-        _isRopeInTension = false;
-        SetPhase(GrapplePhase.Retracting);
-    }
-
-    private void UpdateRetraction()
-    {
-        _retractTimer += Time.deltaTime;
-        float t = Mathf.Clamp01(_retractTimer / Mathf.Max(0.01f, _retractionTime));
-
-        Vector3 restWorldPos = transform.TransformPoint(_hookRestLocalPos);
-        _hook.transform.position = Vector3.Lerp(GrapplePoint, restWorldPos, t);
-
-        if (t >= 1f)
-            ResetGun();
-    }
-
-    private void ResetGun()
-    {
-        _hook.ResetToRest(transform, _hookRestLocalPos, _hookRestLocalRot);
-        _retractTimer = 0f;
-        SetPhase(GrapplePhase.Waiting);
+        _hook.Retract();
+        SetPhase(GrapplePhase.Flying);
     }
 
     private void SetPhase(GrapplePhase next)
@@ -221,14 +157,19 @@ public class GrappleGun : MonoBehaviour
 
     private void OnDisable()
     {
-        if (_hook != null && CurrentPhase != GrapplePhase.Waiting)
-            ResetGun();
+        if (_hook == null)
+            return;
+
+        _hook.ResetToIdle();
+        _hook.gameObject.SetActive(false);
+
+        if (CurrentPhase != GrapplePhase.Waiting)
+            SetPhase(GrapplePhase.Waiting);
     }
 
     private void OnDestroy()
     {
-        // Hook is unparented while flying/stuck, destroy it with the player
-        if (_hook != null && _hook.transform.parent != transform)
+        if (_hook != null)
             Destroy(_hook.gameObject);
     }
 }
