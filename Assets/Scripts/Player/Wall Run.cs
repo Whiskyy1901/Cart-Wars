@@ -21,6 +21,8 @@ public class WallRun : MonoBehaviour
     [Header("Wall Run")]
     [SerializeField] private float _wallRunSpeed = 12f;
     [SerializeField] private float _wallStickForce = 20f;
+  
+    
     [SerializeField] private float _wallGravity = 2f;
     [SerializeField] private float _maxWallRunTime = 2.5f;
     [SerializeField] private float _minForwardInput = 0.1f;
@@ -199,4 +201,6 @@ public class WallRun : MonoBehaviour
         if (_isWallRunning)
             StopWallRun(false);
     }
+
+   
 }

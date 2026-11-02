@@ -9,8 +9,9 @@ public class GrappleHook : MonoBehaviour
     public event Action<Vector3> Attached;
     public event Action Returned;
 
-    [SerializeField] private float _launchSpeed = 80f;
-    [SerializeField] private float _retractionTime = 0.25f;
+    [SerializeField] private float _launchSpeed = 250f;
+    [SerializeField] private float _retractionTime = 0.1f;
+    [SerializeField] private float _ropeWidth = 0.05f;
 
     private LineRenderer _line;
     private Transform _muzzle;
@@ -30,7 +31,8 @@ public class GrappleHook : MonoBehaviour
         _line = GetComponent<LineRenderer>();
         _line.useWorldSpace = true;
         _line.positionCount = 2;
-        //_line.
+        _line.widthMultiplier = _ropeWidth;
+        _line.enabled = false;
 
         if (TryGetComponent(out Rigidbody rb))
         {
@@ -49,6 +51,9 @@ public class GrappleHook : MonoBehaviour
         _targetPoint = targetPoint;
         _surfaceNormal = surfaceNormal;
         _attaches = attaches;
+
+        // Start every shot from the muzzle, so re-firing mid-retract looks clean
+        transform.position = _muzzle.position;
 
         Vector3 toTarget = targetPoint - transform.position;
         if (toTarget.sqrMagnitude > 0.0001f)
@@ -102,13 +107,13 @@ public class GrappleHook : MonoBehaviour
     private void LateUpdate()
     {
         _line.enabled = _state != HookState.Idle;
-    
+
         if (_state == HookState.Idle)
         {
             transform.SetPositionAndRotation(_muzzle.position, _muzzle.rotation);
             return;
         }
-    
+
         _line.SetPosition(0, _muzzle.position);
         _line.SetPosition(1, transform.position);
     }
