@@ -39,6 +39,7 @@ Status: Actively in development.
 | Interact    | Hold E          |
 | Pick up     | F               |
 | Grapple     | Hold Left Click |
+| Grapple Reel| Hold E          |
 | Level Reset | R               |
 
 ## Known Limitations
