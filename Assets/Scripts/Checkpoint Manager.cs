@@ -7,12 +7,8 @@ public class CheckpointManager : MonoBehaviour
     public bool IsCompleted()
     {
         foreach (Checkpoint checkpoint in _checkpoints)
-        {
             if (!checkpoint.HasPassed)
-            {
                 return false;
-            }
-        }
 
         return true;
     }

@@ -617,6 +617,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GrappleHook
   _launchSpeed: 100
   _retractionTime: 0.25
+  _ropeWidth: 0.05
 --- !u!120 &4306504514248835463
 LineRenderer:
   serializedVersion: 3
@@ -810,14 +811,31 @@ MonoBehaviour:
   _muzzle: {fileID: 2724614263452824892}
   _grappleRange: 40
   _aimRadius: 0.2
+  _assistRadius: 2.5
   _aimLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 2039
   _hookableLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
-  _reelInAcceleration: 5
+    m_Bits: 2039
   _minRopeLength: 3
+  _maxRopeLength: 80
+  _reelInSpeed: 8
+  _reelOutSpeed: 10
+  _maxReelSpeedGain: 1.15
+  _extraGravity: 0.8
+  _pumpAcceleration: 8
+  _strafeAcceleration: 6
+  _maxSwingSpeed: 55
+  _airDrag: 0.05
+  _attachHop: 4
+  _attachForwardKick: 6
+  _groundCheckDistance: 1.2
+  _releaseMinSpeed: 12
+  _releaseBoost: 0.2
+  _releaseUpBoost: 3
+  _reelInKey: 19
+  _reelOutKey: 31
 --- !u!1 &7799644802944419730
 GameObject:
   m_ObjectHideFlags: 0
@@ -834,11 +852,12 @@ GameObject:
   - component: {fileID: 5894696034194480744}
   - component: {fileID: 3387068401018166878}
   - component: {fileID: 5195898153889951010}
-  - component: {fileID: 2510169959342408173}
   - component: {fileID: 4915519587657794652}
+  - component: {fileID: 5985632602936121607}
+  - component: {fileID: 8976555823108106005}
   m_Layer: 3
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -895,6 +914,29 @@ MonoBehaviour:
   _toggleSprint: 0
   _crouchSpeed: 7
   _toggleCrouch: 0
+  _groundAcceleration: 70
+  _groundTurnAcceleration: 110
+  _groundDeceleration: 45
+  _overspeedDeceleration: 10
+  _overspeedDecelFactor: 2.5
+  _maxSlopeAngle: 55
+  _groundSnapDistance: 0.35
+  _stickThreshold: 1.5
+  _airAcceleration: 10
+  _airWishSpeed: 12
+  _airTurnRate: 140
+  _airBrake: 6
+  _airDrag: 0
+  _softSpeedCap: 30
+  _softCapDrag: 0.8
+  _hardSpeedCap: 50
+  _terminalFallSpeed: 45
+  _fallMultiplier: 1.6
+  _lowJumpMultiplier: 2.2
+  _slideMinSpeed: 11
+  _slideBoost: 2.5
+  _slideFriction: 5
+  _slideSlopeGravity: 1.2
   _crouchHeight: 1.5
   _crouchTransitionSpeed: 8
   _ceilingMask:
@@ -904,14 +946,13 @@ MonoBehaviour:
   _graphics: {fileID: 7958452656902979760}
   _holdPoint: {fileID: 5330119358261495392}
   _visualSmoothing: 5
-  _grapple: {fileID: 0}
-  _airControlStrength: 0.5
-  _maxAirSteerSpeed: 12
-  _postGrappleControlTime: 0.25
+  _grapple: {fileID: 2727171783524504987}
   _jumpPower: 5
   _airJumpPower: 5
   _maxJumps: 3
   _resetJumpsOnWallRun: 1
+  _coyoteTime: 0.12
+  _jumpBufferTime: 0.12
   _groundCheck: {fileID: 4282796136541431457}
   _checkRadius: 0.2
   _groundLayer:
@@ -977,9 +1018,9 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 112
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!114 &3387068401018166878
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1020,27 +1061,6 @@ MonoBehaviour:
   _pickableLayer:
     serializedVersion: 2
     m_Bits: 256
---- !u!65 &2510169959342408173
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7799644802944419730}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 2, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &4915519587657794652
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1074,6 +1094,51 @@ MonoBehaviour:
   _wallRunCooldown: 0.3
   _cameraTiltAngle: 12
   _tiltSpeed: 8
+--- !u!114 &5985632602936121607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7799644802944419730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a67ba13b0db95544bf75044c11d3c92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraSwingFX
+  _gun: {fileID: 2727171783524504987}
+  _camera: {fileID: 6994291861720743006}
+  _rollPivot: {fileID: 1439006596586174698}
+  _speedFov: 20
+  _attachKick: 10
+  _releaseKick: 15
+  _minSpeed: 8
+  _maxSpeed: 50
+  _maxRoll: 12
+  _rollSmoothing: 8
+--- !u!136 &8976555823108106005
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7799644802944419730}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8168155693443055868
 GameObject:
   m_ObjectHideFlags: 0

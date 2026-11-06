@@ -464,10 +464,6 @@ public class PlayerMovement : MonoBehaviour
         _rb.useGravity = true;
         _rb.linearVelocity = new Vector3(v.x, jumpForce, v.z);
         _jumpCutActive = true;
-        _groundLockTimer = 0.1f;   // leave the ground cleanly
+        _groundLockTimer = 0.1f;
     }
 }
-
-
-
-

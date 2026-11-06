@@ -5,22 +5,27 @@ public class FinishLine : MonoBehaviour
 {
     private CheckpointManager _manager;
     private Timer _timer;
-    private bool _isCompleted;
+    private OrderHandler _handler;
+
+    private bool c1, c2;
 
     [SerializeField] private GameObject _winScreen;
     [SerializeField] private TextMeshProUGUI _timerText;
+    
     
     private void Awake()
     {
         _manager = FindAnyObjectByType<CheckpointManager>();
         _timer = FindAnyObjectByType<Timer>();
+        _handler = FindAnyObjectByType<OrderHandler>();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        _isCompleted = _manager.IsCompleted();
-        if (_isCompleted)
+        if (_manager.IsCompleted() && _handler.IsOrderComplete())
             WinSequence();
+        else
+            Debug.LogError("Incomplete");
     }
 
     private void WinSequence()
